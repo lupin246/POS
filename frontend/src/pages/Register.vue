@@ -42,11 +42,13 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { useStore } from "vuex";
 import User from "../types/User";
 
 export default defineComponent({
   name: "Register",
   setup() {
+    const store: any = useStore();
     const formData = ref<User>({
       name: "",
       email: "",
@@ -56,12 +58,16 @@ export default defineComponent({
 
     // const count = ref(0);
 
-    return { formData };
+    return { formData, store };
   },
   methods: {
     submit() {
       // this.count++;
       this.formData.email = "test";
+    },
+
+    resetState() {
+      this.store.commit("reset");
     },
   },
 });
