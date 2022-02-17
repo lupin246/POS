@@ -1,11 +1,12 @@
 import mongoose = require("mongoose");
 
-interface Product {
-  name: string;
-}
-
-const productSchema: mongoose.Schema<Product> = new mongoose.Schema(
+const productSchema: mongoose.Schema = new mongoose.Schema(
   {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
     name: {
       type: String,
       required: [true, "Please enter a product name"],
