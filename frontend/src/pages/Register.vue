@@ -48,7 +48,7 @@ import User from "../types/User";
 export default defineComponent({
   name: "Register",
   setup() {
-    const store: any = useStore();
+    const store = useStore();
     const formData = ref<User>({
       name: "",
       email: "",
@@ -67,7 +67,7 @@ export default defineComponent({
     },
 
     resetState() {
-      this.store.commit("reset");
+      this.store.dispatch("reset");
     },
   },
 });
