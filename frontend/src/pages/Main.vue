@@ -10,7 +10,7 @@ import Product from "../types/Product";
 
 export default defineComponent({
   name: "Main",
-  //   components: {},
+  components: {},
   setup() {
     const products = ref<Product[]>([]);
   },
