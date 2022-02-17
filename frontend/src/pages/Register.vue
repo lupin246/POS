@@ -1,16 +1,13 @@
 <template>
-  <Main />
+  <div>
+    <h1>Register</h1>
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Main from "./pages/Main.vue";
 
 export default defineComponent({
-  name: "App",
-  components: { Main },
+  name: "Register",
 });
 </script>
-
-<style>
-</style>
