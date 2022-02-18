@@ -22,7 +22,7 @@ export default defineComponent({
 .container {
   display: flex;
   margin: 0 auto;
-  width: 960px;
+  width: 50%;
   justify-content: center;
   align-items: center;
   flex-direction: column;
