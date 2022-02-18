@@ -10,7 +10,7 @@
         <div class="form-field">
           <label for="email">Email</label>
           <input
-            type="email"
+            type="text"
             name="email"
             id="email"
             v-model="formData.email"
