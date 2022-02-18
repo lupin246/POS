@@ -2,7 +2,7 @@
   <div>
     <h1>Register</h1>
     <div>
-      <form @submit.prevent="submit">
+      <form @submit.prevent="submitForm">
         <div class="form-field">
           <label for="name">Name</label>
           <input type="text" name="name" id="name" v-model="formData.name" />
@@ -41,14 +41,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, watch } from "vue";
 import { useStore } from "vuex";
 import User from "../types/User";
+import authService from "../store/authService";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "Register",
   setup() {
     const store = useStore();
+    const router: any = useRouter();
     const formData = ref<User>({
       name: "",
       email: "",
@@ -56,14 +59,29 @@ export default defineComponent({
       password2: "",
     });
 
-    // const count = ref(0);
+    watch(store.state, (currentStore, oldStore) => {
+      if (currentStore.isError) {
+        console.log("error occurred: `${currentStore.message}`");
+      }
+    });
 
-    return { formData, store };
+    return { formData, store, router };
   },
   methods: {
-    submit() {
-      // this.count++;
-      this.formData.email = "test";
+    submitForm() {
+      if (
+        this.formData.password !== this.formData.password2 ||
+        this.formData.password2.length < 1
+      ) {
+        console.log("Passwords do not match, or is blank");
+      } else {
+        this.store.dispatch("register", this.formData);
+
+        // @TODO only allow redirect on success
+        if (this.store.state.user) {
+          this.router.push("/");
+        }
+      }
     },
 
     resetState() {

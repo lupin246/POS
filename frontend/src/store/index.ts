@@ -19,29 +19,26 @@ export default createStore({
       state.isError = false;
       state.message = "";
     },
-    register(state) {
-      console.log("register");
-      console.log(state);
-    },
   },
   actions: {
     reset({ commit }) {
       commit("reset");
     },
-    register({ commit }) {
-      commit("register", async (user: string | null) => {
-        try {
-          return await authService.register(user);
-        } catch (error: AxiosError | any) {
-          const message =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-          console.log(message);
-        }
-      });
+    async register({ commit }, user) {
+      try {
+        console.log("registering");
+
+        return await authService.register(user);
+      } catch (error: AxiosError | any) {
+        const message =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+        console.log(message);
+        this.state.message = message;
+      }
     },
   },
   modules: {},
