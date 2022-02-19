@@ -9,12 +9,7 @@
         </div>
         <div class="form-field">
           <label for="email">Email</label>
-          <input
-            type="text"
-            name="email"
-            id="email"
-            v-model="formData.email"
-          />
+          <input type="text" name="email" id="email" v-model="formData.email" />
         </div>
         <div class="form-field">
           <label for="password">Password</label>
@@ -36,12 +31,13 @@
         </div>
         <button type="submit">Submit</button>
       </form>
+      <div class="errors">{{ store.state.message }}</div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import User from "../types/User";
 import authService from "../store/authService";
@@ -59,34 +55,36 @@ export default defineComponent({
       password2: "",
     });
 
-    watch(store.state, (currentStore, oldStore) => {
-      if (currentStore.isError) {
-        console.log("error occurred: `${currentStore.message}`");
-      }
-    });
-
     return { formData, store, router };
   },
+
   methods: {
-    submitForm() {
+    async submitForm() {
       if (
         this.formData.password !== this.formData.password2 ||
         this.formData.password2.length < 1
       ) {
         console.log("Passwords do not match, or is blank");
+        this.store.commit("setMessage", "Passwords do not match, or is blank");
       } else {
-        this.store.dispatch("register", this.formData);
-
-        // @TODO only allow redirect on success
-        if (this.store.state.user) {
-          this.router.push("/");
-        }
+        this.store.dispatch("register", this.formData).then(() => {
+          if (!this.store.state.isError) {
+            const user: string | null = JSON.parse(
+              localStorage.getItem("user")!
+            );
+            this.store.state.user = user;
+            this.router.push("/");
+          }
+        });
       }
     },
 
     resetState() {
       this.store.dispatch("reset");
     },
+  },
+  mounted() {
+    this.resetState();
   },
 });
 </script>

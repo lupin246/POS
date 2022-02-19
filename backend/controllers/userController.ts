@@ -1,16 +1,16 @@
-import { Request, Response } from "express";
-import jwt = require("jsonwebtoken");
-import bcrypt = require("bcryptjs");
-import asyncHandler = require("express-async-handler");
+import { Request, Response } from 'express';
+import jwt = require('jsonwebtoken');
+import bcrypt = require('bcryptjs');
+import asyncHandler = require('express-async-handler');
 
-import User from "../models/userModel";
+import User from '../models/userModel';
 
 const registerUser = asyncHandler(async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
     res.status(400);
-    throw new Error("Please add all fields");
+    throw new Error('Please add all fields');
   }
 
   //check if user exists
@@ -18,7 +18,7 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
 
   if (userExists) {
     res.status(400);
-    throw new Error("User already exists");
+    throw new Error('User already exists');
   }
 
   //hash password
@@ -34,23 +34,23 @@ const registerUser = asyncHandler(async (req: Request, res: Response) => {
 
   if (user) {
     res.status(201).json({
-      _id: user.id,
-      name: user.name,
-      email: user.email,
+      // _id: user.id,
+      // name: user.name,
+      // email: user.email,
       token: generateToken(user._id),
     });
   } else {
     res.status(400);
-    throw new Error("Error creating user");
+    throw new Error('Error creating user');
   }
 });
 
 const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const { name, email, password } = req.body;
 
-  if (!name || !email || !password) {
+  if (!email || !password) {
     res.status(400);
-    throw new Error("Please add all fields");
+    throw new Error('Please add all fields');
   }
 
   //check if user exists
@@ -63,14 +63,14 @@ const loginUser = asyncHandler(async (req: Request, res: Response) => {
 
   if (user && (await bcrypt.compare(password, user.password))) {
     res.json({
-      _id: user.id,
-      name: user.name,
-      email: user.email,
+      // _id: user.id,
+      // name: user.name,
+      // email: user.email,
       token: generateToken(user._id),
     });
   } else {
     res.status(400);
-    throw new Error("Invalid credentials");
+    throw new Error('Invalid credentials');
   }
 });
 
@@ -81,6 +81,6 @@ const getCurrentUser = asyncHandler(async (req: any, res: Response) => {
 });
 
 const generateToken = (id: Object) =>
-  jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "30d" });
+  jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
 
 export = { registerUser, loginUser, getCurrentUser };

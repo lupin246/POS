@@ -2,15 +2,10 @@
   <div>
     <h1>Login</h1>
     <div>
-      <form @submit.prevent="submit">
+      <form @submit.prevent="submitForm">
         <div class="form-field">
           <label for="email">Email</label>
-          <input
-            type="email"
-            name="email"
-            id="email"
-            v-model="formData.email"
-          />
+          <input type="text" name="email" id="email" v-model="formData.email" />
         </div>
         <div class="form-field">
           <label for="password">Password</label>
@@ -29,25 +24,41 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 import User from "../types/User";
 
 export default defineComponent({
   name: "Login",
   setup() {
-    const formData = ref<User>({
-      name: "",
+    const store = useStore();
+    const router: any = useRouter();
+    const formData = ref({
       email: "",
       password: "",
-      password2: "",
     });
 
-    return { formData };
+    return { formData, store, router };
   },
+
   methods: {
-    submit() {
-      // this.count++;
-      this.formData.email = "test";
+    async submitForm() {
+      this.store.dispatch("login", this.formData).then(() => {
+        if (!this.store.state.isError) {
+          const user: string | null = JSON.parse(localStorage.getItem("user")!);
+          this.store.state.user = user;
+          this.resetState();
+          this.router.push("/");
+        }
+      });
     },
+
+    resetState() {
+      this.store.dispatch("reset");
+    },
+  },
+  mounted() {
+    this.resetState();
   },
 });
 </script>

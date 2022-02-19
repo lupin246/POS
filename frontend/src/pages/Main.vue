@@ -6,6 +6,8 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 import Product from "../types/Product";
 
 export default defineComponent({
@@ -13,6 +15,15 @@ export default defineComponent({
   components: {},
   setup() {
     const products = ref<Product[]>([]);
+    const store = useStore();
+    const router = useRouter();
+
+    return { store, router };
+  },
+  mounted() {
+    if (!this.store.state.user) {
+      this.router.push("/login");
+    }
   },
 });
 </script>
